@@ -1,15 +1,18 @@
 module.exports = {
     entry: './src/index.js',
     output: {
-        path: __dirname + '/public',
-        filename: 'bundle.js'
+        path: __dirname + '/dist',
+        filename: 'main.js'
     },
     module: {
-        loaders: [
-            {
-                test: /\.js$/,
-                loader: 'babel-loader'
-            }
-        ]
-    }
-};
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+          },
+        }
+      ],
+    },
+  };
