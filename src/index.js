@@ -1,6 +1,6 @@
+import Axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import data from './testData';
 import App from './components/App';
 
 // ReactDOM.hydrate(
@@ -8,7 +8,11 @@ import App from './components/App';
 //   document.getElementById('mountNode'),
 // );
 
+
 ReactDOM.render(
-    <App contests={data.contests} />,
-  document.getElementById('root')
+    <App initialContests={window.initialData.contests} />,
+    document.getElementById('root')
 );
+    
+
+

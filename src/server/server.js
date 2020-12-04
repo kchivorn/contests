@@ -9,21 +9,27 @@ const server = express();
 
 server.use(sassMiddleWare({
     src: path.join(__dirname, '../../sass'),
-    dest: path.join(__dirname, '../../public'),
-})
-);
+    dest: path.join(__dirname, '../../dist'),
+}));
 
 server.set('view engine', 'ejs');
+
+
 
 server.use('/api', apiRouter);
 server.use(express.static('dist'));
 
+import serverRender from '../../serverRender';
 server.get('/', (req, res) => {
-
-  res.render('index', {
-    content: '...'
-  });
+  serverRender()
+    .then(({initialMarkup, initialData}) => {
+        res.render('index', {
+            initialMarkup,
+            initialData
+        });
+    })
+    .catch(console.error);
 });
 
-server.listen(8080, () => 
+server.listen(config.port, config.host, () => 
   console.log('Server is running on port: ' + config.port));

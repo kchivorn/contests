@@ -10,7 +10,8 @@ function Header({message}) {
 }
 
 Header.propTypes = {
-    message: PropTypes.string.isRequired
+    message: PropTypes.string
 }
 
 export default Header;
+
