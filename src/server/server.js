@@ -14,14 +14,13 @@ server.use(sassMiddleWare({
 
 server.set('view engine', 'ejs');
 
-
-
 server.use('/api', apiRouter);
 server.use(express.static('dist'));
 
 import serverRender from '../../serverRender';
-server.get('/', (req, res) => {
-  serverRender()
+
+server.get(['/', '/contest/:contestId'], (req, res) => {
+  serverRender(req.params.contestId)
     .then(({initialMarkup, initialData}) => {
         res.render('index', {
             initialMarkup,

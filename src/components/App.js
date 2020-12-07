@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Header from './Header';
 import ContestList from './ContestList';
 import Contest from './Contest';
@@ -8,6 +8,10 @@ import PropTypes from 'prop-types';
 const pushState = (obj, url) => 
     window.history.pushState(obj, '', url);
 
+const onPopState = (handler) => {
+    window.onpopstate = handler;
+};
+
 class App extends React.Component {
     static propTypes = {
         initialData: PropTypes.object.isRequired
@@ -16,9 +20,15 @@ class App extends React.Component {
     state = this.props.initialData;
 
     componentDidMount() {
+        onPopState((event) => {
+            this.setState({
+                currentContestId: (event.state || {}).currentContestId
+            });
+        });
     }
 
     componentWillUnmount() {
+        onPopState(null);
     }
 
     fetchContest = (contestId) => {
@@ -38,6 +48,20 @@ class App extends React.Component {
         });
     }
 
+    fetchContestList = () => {
+        pushState(
+            {currentContestId: null},
+            '/'
+        );
+
+        api.fetchContestList().then(contests => {
+            this.setState({
+                currentContestId: null,
+                contests
+            });
+        });
+    }
+
     currentContest() {
         return this.state.contests[this.state.currentContestId];
     }
@@ -49,9 +73,33 @@ class App extends React.Component {
         return "Naming Contest";
     }
 
+    fetchNames = (nameIds) => {
+        if (nameIds.length === 0) {
+            return;
+        }
+        
+        api.fetchNames(nameIds).then(names => {
+            this.setState({
+                names
+            });
+        })
+    } 
+
+    lookupName = (nameId) => {
+        if (!this.state.names || !this.state.names[nameId]) {
+            return {name: '...'};
+        }
+        return this.state.names[nameId];
+    }
+
     currentContent() {
         if (this.state.currentContestId) {
-            return <Contest {...this.currentContest()} />;
+            return <Contest 
+                {...this.currentContest()} 
+                contestListClick={this.fetchContestList}
+                lookupName={this.lookupName}
+                fetchNames={this.fetchNames}
+            />;
         }
 
         return <ContestList
