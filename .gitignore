@@ -3,6 +3,9 @@ logs
 *.log
 npm-debug.log*
 
+
+dist/main.js
+dist/style.css
 #Runtime data
 pids
 *.pid
@@ -39,5 +42,3 @@ public/bundle.js
 public/bundle.js.map
 
 # main files
-dist
-dist/main.js

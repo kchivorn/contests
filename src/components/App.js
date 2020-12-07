@@ -39,10 +39,10 @@ class App extends React.Component {
 
         api.fetchContest(contestId).then(contest => {
             this.setState({
-                currentContestId: contest.id,
+                currentContestId: contest._id,
                 contests: {
                     ...this.state.contests,
-                    [contest.id]: contest
+                    [contest._id]: contest
                 }
             });
         });
@@ -92,6 +92,22 @@ class App extends React.Component {
         return this.state.names[nameId];
     }
 
+    addName = (newName, contestId) => {
+        api.addName(newName, contestId).then(res =>
+            this.setState({
+                contests: {
+                    ...this.state.contests,
+                    [res.updatedContest._id]: res.updatedContest
+                },
+                names: {
+                    ...this.state.names,
+                    [res.newName._id]: res.newName
+                }
+            })
+        )
+        .catch(console.error);
+    };
+
     currentContent() {
         if (this.state.currentContestId) {
             return <Contest 
@@ -99,6 +115,7 @@ class App extends React.Component {
                 contestListClick={this.fetchContestList}
                 lookupName={this.lookupName}
                 fetchNames={this.fetchNames}
+                addName={this.addName}
             />;
         }
 
